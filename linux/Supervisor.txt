@@ -1,0 +1,111 @@
+Supervisor 
+
+
+//因为Supervisor是用Python开发的一个client/server服务，所以首先检测系统是否安装了Python2.4以上版本
+//检测命令
+python 
+//quit()退出
+//如果没有安装 
+sudo apt-get install python2.7
+//安装supervisor
+apt-get install supervisor
+
+/etc/supervisord.conf 
+
+vi 键错乱
+编辑文件/etc/vim/vimrc.tiny，将“compatible”改成“nocompatible”非兼容模式；
+并添加一句：
+set backspace=2 
+
+可以使用echo_supervisord_conf > /etc/supervisor/supervisord.conf命令，生成默认的完整配置文件（不建议，内容比较多）
+
+
+## socket error
+sudo touch /var/run/supervisor.sock
+sudo chmod 777 /var/run/supervisor.sock
+sudo supervisord 
+
+systemctl reload supervisord.service
+systemctl stop supervisord.service
+systemctl start supervisord.service
+systemctl shutdown  supervisord.service
+systemctl status supervisord.service
+
+
+supervisorctl reload
+supervisorctl stop|start program_name
+supervisorctl status
+supervisorctl shutdown
+
+## Supervisor 配置文件
+cat /etc/supervisord.conf 
+
+
+## Supervisor 日志文件
+cat /tmp/supervisord.log
+
+
+## Error: Another program is already listening on a port that one of our HTTP servers is configured to use.
+unlink /tmp/supervisor.sock
+
+files = /etc/supervisor/conf.d/*.conf
+
+
+## v.dll
+## v.conf
+[program:mvc]
+command=/bin/bash -c "dotnet v.dll"
+directory=/home/repository/test/v/deploy/
+stderr_logfile=/var/log/v.error.log
+stdout_logfile=/var/log/v.log
+environment=ASPNETCORE_ENVIRONMENT=dev
+## user=root
+stopsignal=INT
+autostart=true
+autorestart=true
+startsecs=3
+
+## clash.conf
+[program:clash]
+command=/bin/bash -c "./clash"
+directory=/home/clash/
+stderr_logfile=/home/clash/clash.error.log
+stdout_logfile=/home/clash/clash.log
+stopsignal=INT
+autostart=true
+autorestart=true
+startsecs=3
+
+sudo netstat -nlpt
+
+
+ps -ef | grep dotnet
+
+
+## publish.sh ################################################################################
+#! /bin/bash
+
+
+
+
+
+###########################################
+### linux clash
+	1, github 下载 .gz 压缩包
+	sudo wget https://github.com/Dreamacro/clash/releases/download/v0.16.0/clash-linux-amd64-v0.16.0.gz
+	2,解压
+	sudo gzip clash-linux-amd64-v0.16.0.gz -d
+	3,重命名
+	sudo mv clash-linux-amd64-v0.16.0 clash
+	4,授权
+	sudo chmod +x clash
+	5,测试
+	sudo clash -v
+	6,获取配送文件
+	conf.yaml
+	7,运行
+	sudo clash -d .
+
+
+
+
